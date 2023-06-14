@@ -22,7 +22,7 @@ The primary goal is to practice TDD methodologies by writing tests before implem
 ## Technologies Used
 
 - [Nest.js](https://nestjs.com) - A progressive Node.js framework for building efficient and scalable server-side applications.
-- [MySql] - MySql allows us to establish relationships between tables using a relational DBMS, which helps prevent duplication of tables or fields and enables me to build CRUD operations.
+- MySql - MySql allows us to establish relationships between tables using a relational DBMS, which helps prevent duplication of tables or fields and enables me to build CRUD operations.
 
 ## Installation
 
