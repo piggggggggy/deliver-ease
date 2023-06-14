@@ -1,6 +1,7 @@
 # deliver-ease
 
 The project is a Nest.js web application aimed at practicing **Test-Driven Development (TDD)** principles. 
+
 It provides functionalities for user sign-up, order placement, payments, and retrieval of order history. 
 The application includes an alarm system to notify users of order status changes, allows users to leave reviews within a specific time, and supports bookmarking of favorite stores. Store owners can manage orders and update their status. 
 
