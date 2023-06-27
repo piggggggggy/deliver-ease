@@ -12,73 +12,52 @@ describe('UsersService', () => {
     service = module.get<UsersService>(UsersService);
   });
 
+  const badUserInfo = {
+    id: 1,
+    pw: 'mypw',
+    pwConfirm: 'mypw123',
+    type: 'user',
+    name: 'John',
+    email: 'newregister!!!!example.com',
+  };
+
+  const goodUserInfo = {
+    id: 1,
+    pw: 'mypw',
+    pwConfirm: 'mypw',
+    type: 'user',
+    name: 'Jerry',
+    email: 'newregister@example.com',
+  };
   describe('validateUser', () => {
     it('check email is already registered', () => {
-      expect(service.isEmailRegistered('registered@example.com')).toBe(false);
+      expect(service.isEmailRegistered(badUserInfo.email)).toBe(false);
+      expect(service.isEmailRegistered(goodUserInfo.email)).toBe(true);
     });
 
     it('check email format', () => {
-      const result = service.validateUser({
-        id: 1,
-        pw: 'mypw',
-        pwConfirm: 'mypw',
-        type: 'user',
-        name: 'John',
-        email: 'newregister!!!!example.com',
-      });
-      expect(result).toBe(false);
+      expect(service.isEmailFormat(badUserInfo.email)).toBe(false);
+      expect(service.isEmailFormat(goodUserInfo.email)).toBe(true);
     });
 
     it('check equal pw and pwConfirm', () => {
-      const diffPw = service.validateUser({
-        id: 1,
-        pw: 'mypw',
-        pwConfirm: 'yourpw',
-        type: 'user',
-        name: 'John',
-        email: 'test@test.com',
-      });
-      const samePw = service.validateUser({
-        id: 1,
-        pw: 'mypw',
-        pwConfirm: 'mypw',
-        type: 'user',
-        name: 'John',
-        email: 'test@test.com',
-      });
+      const diffPw = service.isEqualPwConfirm(
+        badUserInfo.pw,
+        badUserInfo.pwConfirm,
+      );
+      const samePw = service.isEqualPwConfirm(
+        goodUserInfo.pw,
+        goodUserInfo.pwConfirm,
+      );
       expect(diffPw).toBe(false);
       expect(samePw).toBe(true);
-    });
-
-    // 이외의 경우 true를 반환
-    it('should be return true', () => {
-      const userInfo = {
-        id: 1,
-        pw: 'mypw',
-        pwConfirm: 'mypw',
-        type: 'user',
-        name: 'John',
-        email: 'newregister@example.com',
-      };
-      const result = service.validateUser(userInfo);
-
-      expect(result).toBe(true);
     });
   });
 
   describe('createUser', () => {
-    const userInfo = {
-      id: 1,
-      email: 'test@test.com',
-      pw: 'qweqwe',
-      pwConfirm: 'qweqwe',
-      type: 'user',
-      name: 'John',
-    };
-
     it('should return true if user creation success', async () => {
-      const savedUser = await service.createUser(userInfo);
-      expect(savedUser).toEqual(userInfo);
+      const savedUser = await service.createUser(goodUserInfo);
+      expect(savedUser).toEqual(goodUserInfo);
     });
   });
 });
