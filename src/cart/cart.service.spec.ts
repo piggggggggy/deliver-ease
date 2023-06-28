@@ -28,12 +28,17 @@ describe('CartService', () => {
   });
 
   describe('validateCartTotalCount()', () => {
-    it('should be return true', async () => {
+    it('should be return true about 1 <= totalCount <= 10', async () => {
+      expect(await service.validateCartTotalCount(1)).toBe(true);
       expect(await service.validateCartTotalCount(2)).toBe(true);
+      expect(await service.validateCartTotalCount(7)).toBe(true);
+      expect(await service.validateCartTotalCount(10)).toBe(true);
     });
-    it('should be return false', async () => {
+
+    it('should be return false about 1 > totalCount || totalCount > 10', async () => {
       expect(await service.validateCartTotalCount(0)).toBe(false);
       expect(await service.validateCartTotalCount(-2)).toBe(false);
+      expect(await service.validateCartTotalCount(11)).toBe(false);
     });
   });
 
