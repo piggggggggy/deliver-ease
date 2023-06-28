@@ -12,7 +12,33 @@ describe('OrderService', () => {
     service = module.get<OrderService>(OrderService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('updatePaymentStatus', () => {
+    it('should update payment status to payment completed', () => {
+      const result = service.updatePaymentStatus(1, 'completed');
+      expect(result).toEqual({
+        id: 1,
+        paymentStatus: 'completed',
+      });
+    });
+
+    it('should update payment status to payment failed', () => {
+      const result = service.updatePaymentStatus(1, 'failed');
+      expect(result).toEqual({
+        id: 1,
+        paymentStatus: 'failed',
+      });
+    });
+  });
+  
+  describe('validatePaymentType', () => {
+    it('should return true if payment type is valid', () => {
+      const result = service.validatePaymentType('credit_card');
+      expect(result).toEqual(true);
+    });
+
+    it('should return false if payment type is invalid', () => {
+      const result = service.validatePaymentType('invalid');
+      expect(result).toEqual(false);
+    });
   });
 });
