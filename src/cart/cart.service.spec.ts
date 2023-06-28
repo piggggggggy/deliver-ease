@@ -27,6 +27,16 @@ describe('CartService', () => {
     });
   });
 
+  describe('validateCartTotalCount()', () => {
+    it('should be return true', async () => {
+      expect(await service.validateCartTotalCount(2)).toBe(true);
+    });
+    it('should be return false', async () => {
+      expect(await service.validateCartTotalCount(0)).toBe(false);
+      expect(await service.validateCartTotalCount(-2)).toBe(false);
+    });
+  });
+
   describe('create Cart', () => {
     it('should return true', async () => {
       expect(await service.createCart(goodCartInfo)).toBe(true);
