@@ -12,7 +12,23 @@ describe('OrderService', () => {
     service = module.get<OrderService>(OrderService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  const orderInfo = {
+    id: 1,
+    store_id: 1,
+    dish_id: 1,
+    user_id: 1,
+    status: { name: 'order request' },
+  };
+  const updateOrderInfo = {
+    id: 1,
+    store_id: 1,
+    dish_id: 1,
+    user_id: 1,
+    status: { name: 'order confirmed' },
+  };
+  describe('updateOrderStatus', () => {
+    it('should be return true', async () => {
+      expect(service.updateOrderStatus(orderInfo, updateOrderInfo)).toBe(true);
+    });
   });
 });
