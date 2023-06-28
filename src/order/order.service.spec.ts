@@ -19,16 +19,36 @@ describe('OrderService', () => {
     user_id: 1,
     status: { name: 'order request' },
   };
-  const updateOrderInfo = {
+  const orderComfirmed = {
     id: 1,
     store_id: 1,
     dish_id: 1,
     user_id: 1,
     status: { name: 'order confirmed' },
   };
+  const orderCompleted = {
+    id: 1,
+    store_id: 1,
+    dish_id: 1,
+    user_id: 1,
+    status: { name: 'order completed' },
+  };
   describe('updateOrderStatus', () => {
+    it('should be return order confirmed', async () => {
+      expect(service.updateOrderStatus(orderInfo, orderComfirmed)).toBe(
+        'order confirmed',
+      );
+    });
+    it('should be return order completed', async () => {
+      expect(service.updateOrderStatus(orderInfo, orderCompleted)).toBe(
+        'order completed',
+      );
+    });
+  });
+
+  describe('sendOrderAlarm', () => {
     it('should be return true', async () => {
-      expect(service.updateOrderStatus(orderInfo, updateOrderInfo)).toBe(true);
+      expect(service.sendOrderAlarm(orderInfo)).toBe(true);
     });
   });
 });
