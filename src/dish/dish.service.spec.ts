@@ -153,11 +153,41 @@ describe('DishService', () => {
     });
   });
 
-  describe('registerDish', () => {});
+  describe('registerDish', () => {
+    it('should return false with invalid argument', () => {
+      const result = service.registerDish(argsToBeExpectedInvalid);
+      expect(result).toBe(false);
+    });
 
-  describe('deleteDish', () => {});
+    it('should return true', () => {
+      const result = service.registerDish(argsToBeExpectedToReturnTrue);
+      expect(result).toBe(true);
+    });
+  });
 
-  describe('updateDish', () => {});
+  describe('deleteDish', () => {
+    it('should return false with invalid argument', () => {
+      const result = service.deleteDish('invalidId');
+      expect(result).toBe(false);
+    });
+
+    it('should return true', () => {
+      const result = service.deleteDish('1');
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('updateDish', () => {
+    it('should return false with invalid argument', () => {
+      const result = service.updateDish('invalidId', argsToBeExpectedInvalid);
+      expect(result).toBe(false);
+    });
+
+    it('should return true', () => {
+      const result = service.updateDish('1', argsToBeExpectedToReturnTrue);
+      expect(result).toBe(true);
+    });
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { StoreService } from '../store/store.service';
 
 // temporary
 interface DishEntity {
-  id: string;
+  id: number;
   storeId: string; // ?
   name: string;
   stock: number;
@@ -35,7 +36,23 @@ export class DishService {
   private dish: DishEntity[] = [];
 
   // service
-  registerDish(dishData: any): boolean {}
+  registerDish(storeId: string, dishData: DishDto): boolean {
+    // TODO: need to check storeId is valid
+    const isValid = this.checkDishInfoValidation(dishData);
+    if (isValid) {
+      this.dish.push({
+        id: this.dish.length + 1,
+        storeId: '1',
+        ...dishData,
+      });
+      return true;
+    }
+    throw new Error('Invalid dish data');
+  }
+
+  deleteDish(id: string): boolean {}
+
+  updateDish(id: string, dishData: DishDto): boolean {}
 
   // unit function
   checkDishInfoValidation(dishData: any): boolean {
