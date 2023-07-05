@@ -13,17 +13,26 @@ describe('CartService', () => {
   });
 
   const stockInfo = { id: 1, store_id: 2, dish_id: 1, stock: 1 };
-  const badCartInfo = { id: 1, user_id: 1, store_id: 2, count: -1 };
+  const badCartInfo = { id: -1, user_id: -1, store_id: -2, count: -1 };
   const goodCartInfo = { id: 1, user_id: 1, store_id: 2, count: 1 };
+  const overCartInfo = { id: 1, user_id: 1, store_id: 2, count: 11 };
   const updateCartInfo = { id: 1, user_id: 1, store_id: 2, count: 2 };
   describe('validateCartCreateInfo', () => {
-    it('should be ', async () => {
-      expect(service.isPositiveAmount(badCartInfo)).toBe(false);
-      expect(service.isPositiveAmount(goodCartInfo)).toBe(true);
+    it('should be check cart item positive count and return true', async () => {
+      expect(service.isPositiveAmount(goodCartInfo.count)).toBe(true);
     });
-    it('isStockRemain', async () => {
-      expect(await service.isStockRemain(stockInfo, badCartInfo)).toBe(false);
-      expect(await service.isStockRemain(stockInfo, goodCartInfo)).toBe(true);
+    it('should be check cart item positive count and return false', async () => {
+      expect(service.isPositiveAmount(badCartInfo.count)).toBe(false);
+    });
+    it('should be compare material stock and cartItem count, return true', () => {
+      expect(service.isStockRemain(stockInfo.stock, goodCartInfo.count)).toBe(
+        true,
+      );
+    });
+    it('should be compare material stock and cartItem count, return false', () => {
+      expect(service.isStockRemain(stockInfo.stock, overCartInfo.count)).toBe(
+        false,
+      );
     });
   });
 
@@ -44,51 +53,52 @@ describe('CartService', () => {
 
   describe('create Cart', () => {
     it('should return true', async () => {
-      expect(await service.createCart(goodCartInfo)).toBe(true);
+      const saveCartInfo = await service.createCart(goodCartInfo);
+      expect(saveCartInfo).toEqual(goodCartInfo);
     });
   });
 
-  describe('getCart', () => {
-    it('should return []', async () => {
-      expect(await service.getCart(1)).toEqual([]);
+  describe('getCartItem using id', () => {
+    it('should be return []', async () => {
+      expect(await service.getCartItem(-1)).toEqual([]);
     });
 
-    it('should return [goodCartInfo]', async () => {
+    it('should be return goodCartInfo', async () => {
       await service.createCart(goodCartInfo);
-      expect(await service.getCart(1)).toEqual([goodCartInfo]);
+      expect(await service.getCartItem(1)).toEqual(goodCartInfo);
     });
   });
 
-  describe('validateCartUpdateInfo', async () => {
-    await service.createCart(goodCartInfo);
-
-    it('should be return true', async () => {
-      expect(service.validateCartUpdateInfo(goodCartInfo, updateCartInfo)).toBe(
-        true,
-      );
+  describe('validateCartUpdateInfo', () => {
+    it('should be validate updateInfo and return true', async () => {
+      expect(service.validateCartUpdateInfo(updateCartInfo)).toBe(true);
     });
-    it('should be return false', async () => {
-      expect(service.validateCartUpdateInfo(badCartInfo, updateCartInfo)).toBe(
-        false,
-      );
+    it('should be validate updateInfo and return false', async () => {
+      updateCartInfo.count = -1;
+      expect(service.validateCartUpdateInfo(updateCartInfo)).toBe(false);
     });
   });
 
-  describe('updateCart', async () => {
-    await service.createCart(goodCartInfo);
-    it('should be return true', async () => {
-      expect(service.updateCart(goodCartInfo, updateCartInfo)).toBe(true);
+  describe('updateCart', () => {
+    it('should be update item and return true', async () => {
+      await service.createCart(goodCartInfo);
+      expect(service.updateCartItem(goodCartInfo, updateCartInfo)).toBe(true);
+    });
+    it('should be update item and return false', async () => {
+      await service.createCart(badCartInfo);
+      expect(service.updateCartItem(goodCartInfo, updateCartInfo)).toBe(false);
     });
   });
 
-  describe('deleteCart', async () => {
-    await service.createCart(goodCartInfo);
-    it('should be return true', async () => {
-      expect(service.deleteCart(goodCartInfo)).toBe(true);
+  describe('deleteCart', () => {
+    it('should be delete item and return true', async () => {
+      await service.createCart(goodCartInfo);
+      expect(service.deleteCartItem(goodCartInfo)).toBe(true);
     });
 
-    it('should be return false', async () => {
-      expect(service.deleteCart(badCartInfo)).toBe(false);
+    it('should be delete item and return false', async () => {
+      await service.createCart(goodCartInfo);
+      expect(service.deleteCartItem(badCartInfo)).toBe(false);
     });
   });
 });
