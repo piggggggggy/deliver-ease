@@ -137,8 +137,8 @@ describe('StoreService', () => {
 
   // TODO: add auth check before delete api
   describe('Delete Store - deleteStore', () => {
-    it('should return false with invalid argument', () => {
-      const result = service.deleteStore('invalidId');
+    it('should return false with nonexistent storeId', () => {
+      const result = service.deleteStore('nonexistentId');
       expect(result).toBe(false);
     });
 
@@ -150,8 +150,11 @@ describe('StoreService', () => {
   });
 
   describe('Update Store - updateStore', () => {
-    it('should return false with invalid argument', () => {
-      const result = service.updateStore('invalidId', argsToBeExpectedInvalid);
+    it('should return false with nonexistent storeId', () => {
+      const result = service.updateStore(
+        'nonexistentId',
+        argsToBeExpectedInvalid,
+      );
       expect(result).toBe(false);
     });
 
