@@ -12,7 +12,13 @@ describe('OrderService', () => {
     service = module.get<OrderService>(OrderService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should return order progress', () => {
+    const orderId = '12345';
+    const progress = service.getOrderStatus(orderId);
+
+    expect(progress).toBeDefined();
+    expect(progress).toMatch(
+      /주문 요청|주문 확정|취소 요청|취소 완료|취소 실패|배달 중|배달 완료/,
+    );
   });
 });
