@@ -134,9 +134,33 @@ describe('StoreService', () => {
     });
   });
 
-  describe('Delete Store', () => {});
+  // TODO: add auth check before delete api
+  describe('Delete Store', () => {
+    it('should return false with invalid argument', () => {
+      const result = service.deleteStore('invalidId');
+      expect(result).toBe(false);
+    });
 
-  describe('Edit Store', () => {});
+    it('should return true', () => {
+      service.registerStore(argsToBeExpectedToReturnTrue);
+      const result = service.deleteStore('1');
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('Edit Store', () => {
+    it('should return false with invalid argument', () => {
+      const result = service.editStore('invalidId', argsToBeExpectedInvalid);
+      expect(result).toBe(false);
+    });
+
+    it('should return true', () => {
+      service.registerStore(argsToBeExpectedToReturnTrue);
+      const result = service.editStore('1', argsToBeExpectedToReturnTrue);
+      expect(result).toBe(true);
+      service.deleteStore('1');
+    });
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();

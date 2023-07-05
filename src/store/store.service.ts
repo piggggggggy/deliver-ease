@@ -25,9 +25,21 @@ export class StoreService {
   }
 
   deleteStore(id: string): boolean {
-    this.getOneStore(id);
+    this.checkInvalidStoreId(id);
     this.stores.filter((store) => store.id !== parseInt(id));
     return true;
+  }
+
+  editStore(id: string, storeData: any): boolean {
+    this.checkInvalidStoreId(id);
+    const isValid = this.checkStoreInfoValidation(storeData);
+    if (isValid) {
+      this.stores = this.stores.map((store) =>
+        store.id === parseInt(id) ? { ...store, ...storeData } : store,
+      );
+      return true;
+    }
+    throw new Error('Invalid store data');
   }
 
   // unit function
@@ -45,6 +57,15 @@ export class StoreService {
       this.checkStoreBusinessHours(open_time, close_time) &&
       this.checkStoreMiniumPriceForDelivering(at_least_order_price)
     );
+  }
+
+  checkInvalidStoreId(id: string): boolean {
+    try {
+      this.getOneStore(id);
+    } catch (error) {
+      throw new Error('Invalid store id');
+    }
+    return true;
   }
 
   // sub unit function
