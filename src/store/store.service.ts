@@ -25,12 +25,33 @@ export class StoreService {
   }
 
   deleteStore(id: string): boolean {
-    this.getOneStore(id);
+    this.checkInvalidStoreId(id);
     this.stores.filter((store) => store.id !== parseInt(id));
     return true;
   }
 
+  updateStore(id: string, storeData: any): boolean {
+    this.checkInvalidStoreId(id);
+    const isValid = this.checkStoreInfoValidation(storeData);
+    if (isValid) {
+      this.stores = this.stores.map((store) =>
+        store.id === parseInt(id) ? { ...store, ...storeData } : store,
+      );
+      return true;
+    }
+    throw new Error('Invalid store data');
+  }
+
   // unit function
+  checkInvalidStoreId(id: string): boolean {
+    try {
+      this.getOneStore(id);
+    } catch (error) {
+      throw new Error('Invalid store id');
+    }
+    return true;
+  }
+
   checkStoreInfoValidation(storeData: any): boolean {
     const {
       storeName,
