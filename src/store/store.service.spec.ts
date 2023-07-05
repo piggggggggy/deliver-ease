@@ -115,8 +115,9 @@ describe('StoreService', () => {
     });
   });
 
-  // Service unit test function
-  describe('Register Store - registerStore', () => {
+  /* Service unit test function */
+  // registerStore
+  describe('Register Store', () => {
     it('should return false with invalid argument', () => {
       try {
         service.registerStore(argsToBeExpectedInvalid);
@@ -134,6 +135,7 @@ describe('StoreService', () => {
     });
   });
 
+  // deleteStore
   // TODO: add auth check before delete api
   describe('Delete Store', () => {
     it('should return false with invalid argument', () => {
@@ -148,6 +150,8 @@ describe('StoreService', () => {
     });
   });
 
+  // editStore
+  // TODO: add auth check before delete api
   describe('Edit Store', () => {
     it('should return false with invalid argument', () => {
       const result = service.editStore('invalidId', argsToBeExpectedInvalid);
