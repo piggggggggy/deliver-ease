@@ -29,4 +29,9 @@ export class OrderService {
     }
     return false; // 취소 실패
   }
+
+  getOrderHistory(userId: string): string[] {
+    // Todo 데이터베이스나 외부 시스템에서 사용자의 주문 내역을 조회하는 로직을 구현해야 합니다.
+    return ['주문 내역 1', '주문 내역 2', '주문 내역 3'];
+  }
 }

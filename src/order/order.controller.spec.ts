@@ -47,4 +47,16 @@ describe('OrderController', () => {
       expect(result).toBe('주문을 취소할 수 없습니다.');
     });
   });
+
+  describe('getOrderHistory', () => {
+    it('should return order history for a user', () => {
+      const userId = '12345';
+      const orderHistory = ['주문 내역 1', '주문 내역 2'];
+
+      jest.spyOn(service, 'getOrderHistory').mockReturnValue(orderHistory);
+
+      const result = controller.getOrderHistory(userId);
+      expect(result).toEqual(orderHistory);
+    });
+  });
 });
