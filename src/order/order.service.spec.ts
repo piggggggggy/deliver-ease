@@ -12,7 +12,7 @@ describe('OrderService', () => {
     service = module.get<OrderService>(OrderService);
   });
 
-  it('should return order progress', () => {
+  it('should return order status', () => {
     const orderId = '12345';
     const progress = service.getOrderStatus(orderId);
 
