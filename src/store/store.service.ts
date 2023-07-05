@@ -75,7 +75,6 @@ export class StoreService {
   }
 
   checkStoreImgUrl(storeImgUrl: string): boolean {
-    // 정규 표현식을 사용하여 URL 패턴을 확인
     const urlPattern =
       /^(http(s)?:\/\/)(www\.)?([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?$/;
     return typeof storeImgUrl === 'string' && urlPattern.test(storeImgUrl);
