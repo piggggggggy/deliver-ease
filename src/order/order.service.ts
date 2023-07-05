@@ -16,4 +16,17 @@ export class OrderService {
     const randomIndex = Math.floor(Math.random() * statuses.length);
     return statuses[randomIndex];
   }
+
+  isOrderCancelable(orderId: string): boolean {
+    const orderStatus = this.getOrderStatus(orderId);
+    return orderStatus === '주문 요청';
+  }
+
+  cancelOrder(orderId: string): boolean {
+    if (this.isOrderCancelable(orderId)) {
+      // Todo 주문 취소 로직 구현
+      return true; // 취소 완료
+    }
+    return false; // 취소 실패
+  }
 }
