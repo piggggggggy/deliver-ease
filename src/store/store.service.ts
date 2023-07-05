@@ -82,7 +82,6 @@ export class StoreService {
   }
 
   checkStoreBusinessHours(open_time: string, close_time: string): boolean {
-    // 정규 표현식을 사용하여 시간 패턴을 확인
     const timePattern = /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)$/;
     return (
       typeof open_time === 'string' &&
