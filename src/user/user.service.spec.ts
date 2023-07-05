@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 
-describe('UsersService', () => {
-  let service: UsersService;
+describe('UserService', () => {
+  let service: UserService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UsersService],
+      providers: [UserService],
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
+    service = module.get<UserService>(UserService);
   });
 
   const badUserInfo = {
@@ -30,32 +30,38 @@ describe('UsersService', () => {
     email: 'newregister@example.com',
   };
   describe('validateUser', () => {
-    it('check email is already registered', () => {
-      expect(service.isEmailRegistered(badUserInfo.email)).toBe(false);
-      expect(service.isEmailRegistered(goodUserInfo.email)).toBe(true);
+    it('should be check email is already registered and return true', () => {
+      expect(service.isEmailRegistered('register@example.com')).toBe(true);
+    });
+    it('should be check email is already registered and return false', () => {
+      expect(service.isEmailRegistered('new@example.com')).toBe(false);
     });
 
-    it('check email format', () => {
-      expect(service.isEmailFormat(badUserInfo.email)).toBe(false);
+    it('should be check email format and return true', () => {
       expect(service.isEmailFormat(goodUserInfo.email)).toBe(true);
     });
+    it('should be check email format and return false', () => {
+      expect(service.isEmailFormat(badUserInfo.email)).toBe(false);
+    });
 
-    it('check equal pw and pwConfirm', () => {
+    it('should be check equal pw and pwConfirm and return false', () => {
       const diffPw = service.isEqualPwConfirm(
         badUserInfo.pw,
         badUserInfo.pwConfirm,
       );
+      expect(diffPw).toBe(false);
+    });
+    it('should be check equal pw and pwConfirm and return true', () => {
       const samePw = service.isEqualPwConfirm(
         goodUserInfo.pw,
         goodUserInfo.pwConfirm,
       );
-      expect(diffPw).toBe(false);
       expect(samePw).toBe(true);
     });
   });
 
   describe('createUser', () => {
-    it('should return true if user creation success', async () => {
+    it('should be return crated userInfo', async () => {
       const savedUser = await service.createUser(goodUserInfo);
       expect(savedUser).toEqual(goodUserInfo);
     });
