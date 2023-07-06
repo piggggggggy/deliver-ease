@@ -29,4 +29,13 @@ export class OrderService {
     }
     return false; // 취소 실패
   }
+
+  updateOrderStatus(orderInfo, orderStatus) {
+    orderInfo.status.name = orderStatus;
+    return orderInfo.status.name;
+  }
+
+  sendOrderAlarm(orderInfo) {
+    return true;
+  }
 }
