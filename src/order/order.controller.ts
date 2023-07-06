@@ -17,4 +17,9 @@ export class OrderController {
       ? '주문이 취소되었습니다.'
       : '주문을 취소할 수 없습니다.';
   }
+
+  @Get('/:userId')
+  getOrderHistory(@Param('userId') userId: string): string[] {
+    return this.orderService.getOrderHistory(userId);
+  }
 }
