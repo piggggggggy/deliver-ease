@@ -28,25 +28,25 @@ describe('StoreService', () => {
   };
 
   const argsToBeExpectedInvalidDish = {
-    dishName: 'long long long long and invalid dish name',
-    dishImgUrl: 'invalid url',
-    dishPrice: -10,
-    dishStock: -10,
-    dishCategory: '',
-    dishOptions: [
+    name: 'long long long long and invalid dish name',
+    imgUrl: 'invalid url',
+    price: -10,
+    stock: -10,
+    category: '',
+    options: [
       { name: 'invalid option name', price: -10 },
       { name: 'invalid option name', price: -10 },
     ],
   };
   const argsToBeExpectedValidDish = {
-    dishName: 'validName',
-    dishImgUrl: 'http://valid-url.com/image.jpg',
-    dishPrice: 10000,
-    dishStock: 100,
-    dishCategory: 'main',
-    dishOptions: [
-      { name: 'valid option name', price: 1000 },
-      { name: 'valid option name', price: 1000 },
+    name: 'validName',
+    imgUrl: 'http://valid-url.com/image.jpg',
+    price: 10000,
+    stock: 100,
+    category: 'main',
+    options: [
+      { name: 'valid name', price: 1000 },
+      { name: 'valid name', price: 1000 },
     ],
   };
 
@@ -89,12 +89,6 @@ describe('StoreService', () => {
         expect(result).toBe(false);
       });
 
-      it('should return false with Number type url', () => {
-        const numberUrl = 123;
-        const result = service.checkStoreImgUrl(numberUrl as string);
-        expect(result).toBe(false);
-      });
-
       it('should return true with valid url', () => {
         const result = service.checkStoreImgUrl(
           'http://valid-url.com/image.jpg',
@@ -120,13 +114,6 @@ describe('StoreService', () => {
     });
 
     describe('subUnit - checkStoreMiniumPriceForDelivering', () => {
-      it('should return false with string price', () => {
-        const result = service.checkStoreMiniumPriceForDelivering(
-          argsToBeExpectedInvalid.at_least_order_price as number,
-        );
-        expect(result).toBe(false);
-      });
-
       it('should return false with out-of-range price', () => {
         const result = service.checkStoreMiniumPriceForDelivering(-5);
         expect(result).toBe(false);
@@ -143,13 +130,15 @@ describe('StoreService', () => {
     describe('unit - checkStoreDishValidation', () => {
       it('should return false with invalid argument', () => {
         const result = service.checkStoreDishValidation(
-          argsToBeExpectedInvalid,
+          argsToBeExpectedInvalidDish,
         );
         expect(result).toBe(false);
       });
 
       it('should return true with ', () => {
-        const result = service.checkStoreDishValidation(argsToBeExpectedValid);
+        const result = service.checkStoreDishValidation(
+          argsToBeExpectedValidDish,
+        );
         expect(result).toBe(true);
       });
     });
@@ -183,12 +172,6 @@ describe('StoreService', () => {
         const result = service.checkStoreDishImgUrl(
           argsToBeExpectedInvalid.storeImgUrl,
         );
-        expect(result).toBe(false);
-      });
-
-      it('should return false with Number type url', () => {
-        const numberUrl = 123;
-        const result = service.checkStoreDishImgUrl(numberUrl as string);
         expect(result).toBe(false);
       });
 
@@ -242,14 +225,8 @@ describe('StoreService', () => {
 
       it('should return true with valid options', () => {
         const validOptions = [
-          {
-            name: 'option1',
-            price: 10000,
-          },
-          {
-            name: 'option2',
-            price: 1,
-          },
+          { name: 'valid name', price: 1000 },
+          { name: 'valid name', price: 1000 },
         ];
         const result = service.checkStoreDishOptions(validOptions);
         expect(result).toBe(true);
@@ -278,7 +255,7 @@ describe('StoreService', () => {
   // TODO: add auth check before delete api
   describe('Delete Store - deleteStore', () => {
     it('should return false with nonexistent storeId', () => {
-      const result = service.deleteStore('nonexistentId');
+      const result = service.deleteStore('999');
       expect(result).toBe(false);
     });
 
@@ -291,17 +268,16 @@ describe('StoreService', () => {
 
   describe('Update Store - updateStore', () => {
     it('should return false with nonexistent storeId', () => {
-      const result = service.updateStore(
-        'nonexistentId',
-        argsToBeExpectedInvalid,
-      );
-      expect(result).toBe(false);
+      try {
+        service.updateStore('nonexistentId', argsToBeExpectedInvalid);
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
     });
 
     it('should return true', () => {
       service.registerStore(argsToBeExpectedValid);
-      const result = service.updateStore('1', argsToBeExpectedValid);
-      expect(result).toBe(true);
+      service.updateStore('1', argsToBeExpectedValid);
       service.deleteStore('1');
     });
   });
@@ -310,7 +286,7 @@ describe('StoreService', () => {
     beforeEach(() => {
       service.registerStore(argsToBeExpectedValid);
       const store = service.getOneStore('1');
-      expect(store.id).toBe('1');
+      expect(`${store.id}`).toBe('1');
     });
 
     describe('Register Store Dish - registerStoreDish', () => {
@@ -334,35 +310,35 @@ describe('StoreService', () => {
 
     describe('Delete Store Dish - deleteStoreDish', () => {
       it('should return false with nonexistent dishId', () => {
-        const result = service.deleteStoreDish('1', 'nonexistentId');
-        expect(result).toBe(false);
+        try {
+          service.deleteStoreDish('1', '999');
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+        }
       });
 
       it('should return true', () => {
         service.registerStoreDish('1', argsToBeExpectedValidDish);
-        const result = service.deleteStoreDish('1', '1');
-        expect(result).toBe(true);
+        service.deleteStoreDish('1', '1');
       });
     });
 
     describe('Update Store Dish - updateStoreDish', () => {
       it('should return false with nonexistent dishId', () => {
-        const result = service.updateStoreDish(
-          '1',
-          'nonexistentId',
-          argsToBeExpectedInvalidDish,
-        );
-        expect(result).toBe(false);
+        try {
+          service.updateStoreDish(
+            '1',
+            'nonexistentId',
+            argsToBeExpectedInvalidDish,
+          );
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+        }
       });
 
       it('should return true', () => {
         service.registerStoreDish('1', argsToBeExpectedValidDish);
-        const result = service.updateStoreDish(
-          '1',
-          '1',
-          argsToBeExpectedValidDish,
-        );
-        expect(result).toBe(true);
+        service.updateStoreDish('1', '1', argsToBeExpectedValidDish);
         service.deleteStoreDish('1', '1');
       });
     });

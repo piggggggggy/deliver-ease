@@ -11,6 +11,7 @@ export class StoreService {
       this.stores.push({
         id: this.stores.length + 1, // temporary
         ...storeData,
+        dishes: [],
       });
       return true;
     }
@@ -26,53 +27,70 @@ export class StoreService {
   }
 
   deleteStore(id: string): boolean {
-    this.checkInvalidStoreId(id);
-    this.stores.filter((store) => store.id !== parseInt(id));
+    try {
+      this.checkInvalidStoreId(id);
+      this.stores.filter((store) => store.id !== parseInt(id));
+    } catch (error) {
+      return false;
+    }
     return true;
   }
 
-  updateStore(id: string, storeData: any): boolean {
-    this.checkInvalidStoreId(id);
-    const isValid = this.checkStoreInfoValidation(storeData);
-    if (isValid) {
-      this.stores = this.stores.map((store) =>
-        store.id === parseInt(id) ? { ...store, ...storeData } : store,
-      );
-      return true;
+  updateStore(id: string, storeData: any) {
+    try {
+      this.checkInvalidStoreId(id);
+      const isValid = this.checkStoreInfoValidation(storeData);
+      if (isValid) {
+        this.stores = this.stores.map((store) =>
+          store.id === parseInt(id) ? { ...store, ...storeData } : store,
+        );
+      }
+    } catch (error) {
+      throw new Error(`Invalid storeId or store data : ${error.message}`);
     }
-    throw new Error('Invalid store data');
   }
 
   // dish service function
   registerStoreDish(storeId: string, dishData: any): boolean {
-    this.checkInvalidStoreId(storeId);
-    const isValid = this.checkStoreDishValidation(dishData);
-    if (isValid) {
-      const store = this.getOneStore(storeId);
-      store.dishes.push({
-        id: store.dishes.length + 1, // temporary
-        ...dishData,
-      });
-      return true;
+    try {
+      this.checkInvalidStoreId(storeId);
+      const isValid = this.checkStoreDishValidation(dishData);
+      if (isValid) {
+        const store = this.getOneStore(storeId);
+        store.dishes.push({
+          id: store.dishes.length + 1, // temporary
+          ...dishData,
+        });
+        return true;
+      }
+    } catch (error) {
+      throw new Error(`Invalid storeId or dish data : ${error.message}`);
     }
-    throw new Error('Invalid dish data');
   }
   deleteStoreDish(storeId: string, dishId: string) {
-    this.checkInvalidStoreId(storeId);
-    const store = this.getOneStore(storeId);
-    store.dishes.filter((dish) => dish.id !== parseInt(dishId));
-  }
-  updateStoreDish(storeId: string, dishId: string, dishData: any): boolean {
-    this.checkInvalidStoreId(storeId);
-    const isValid = this.checkStoreDishValidation(dishData);
-    if (isValid) {
+    try {
+      this.checkInvalidStoreId(storeId);
       const store = this.getOneStore(storeId);
-      store.dishes = store.dishes.map((dish) =>
-        dish.id === parseInt(dishId) ? { ...dish, ...dishData } : dish,
-      );
-      return true;
+      store.dishes.filter((dish) => dish.id !== parseInt(dishId));
+    } catch (error) {
+      throw new Error(`Invalid storeId or dishId : ${error.message}`);
     }
-    throw new Error('Invalid dish data');
+  }
+  updateStoreDish(storeId: string, dishId: string, dishData: any) {
+    try {
+      this.checkInvalidStoreId(storeId);
+      const isValid = this.checkStoreDishValidation(dishData);
+      if (isValid) {
+        const store = this.getOneStore(storeId);
+        store.dishes = store.dishes.map((dish) =>
+          dish.id === parseInt(dishId) ? { ...dish, ...dishData } : dish,
+        );
+      }
+    } catch (error) {
+      throw new Error(
+        `Invalid storeId or dishId or dish data : ${error.message}`,
+      );
+    }
   }
 
   /* unit function */
@@ -104,10 +122,10 @@ export class StoreService {
 
   // dish unit function
   checkStoreDishValidation(dishData: any): boolean {
-    const { dishName, dishImgUrl, price, stock, category, options } = dishData;
+    const { name, imgUrl, price, stock, category, options } = dishData;
     return (
-      this.checkStoreDishName(dishName) &&
-      this.checkStoreDishImgUrl(dishImgUrl) &&
+      this.checkStoreDishName(name) &&
+      this.checkStoreDishImgUrl(imgUrl) &&
       this.checkStoreDishPrice(price) &&
       this.checkStoreDishStock(stock) &&
       this.checkStoreDishCategory(category) &&
@@ -164,14 +182,19 @@ export class StoreService {
   checkStoreDishOptions(
     dishOptions: { name: string; price: number }[],
   ): boolean {
+    let isValid = true; // 유효성 검사 결과를 저장할 변수
+
     dishOptions.forEach((option) => {
       if (!this.checkStoreDishName(option.name)) {
-        return false;
+        isValid = false;
+        return; // 유효성 검사 실패 시, 콜백 함수에서 바로 반환하여 순회를 중단
       }
       if (!this.checkStoreDishPrice(option.price)) {
-        return false;
+        isValid = false;
+        return; // 유효성 검사 실패 시, 콜백 함수에서 바로 반환하여 순회를 중단
       }
     });
-    return true;
+
+    return isValid;
   }
 }
