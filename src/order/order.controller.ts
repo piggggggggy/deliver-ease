@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import { OrderService } from './order.service';
 
 @Controller('order')
@@ -21,5 +21,13 @@ export class OrderController {
   @Get('/:userId')
   getOrderHistory(@Param('userId') userId: string): string[] {
     return this.orderService.getOrderHistory(userId);
+  }
+
+  @Patch('/:orderId/status')
+  updateOrderStatus(
+    @Param('orderId') orderId: number,
+    @Body('orderStatus') orderStatus: string,
+  ): Promise<boolean> {
+    return this.orderService.updateOrderStatus(orderId, orderStatus);
   }
 }

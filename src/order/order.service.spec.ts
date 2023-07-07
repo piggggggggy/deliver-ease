@@ -85,35 +85,29 @@ describe('OrderService', () => {
     DELIVERY_COMPLETED: 'delivery completed',
   };
 
-  const orderInfo = {
-    id: 1,
-    store_id: 1,
-    dish_id: 1,
-    user_id: 1,
-    status: { name: null, timestamp: 0 },
-  };
-
   describe('updateOrderStatus', () => {
+    const orderId = 12345;
     it('should be update order status and return "order confirmed"', async () => {
       expect(
-        service.updateOrderStatus(orderInfo, OrderStatus.ORDER_CONFIRMED),
-      ).toBe('order confirmed');
+        await service.updateOrderStatus(orderId, OrderStatus.ORDER_CONFIRMED),
+      ).toBe(true);
     });
     it('should be update order status and return "order confirmed"', async () => {
       expect(
-        service.updateOrderStatus(orderInfo, OrderStatus.DELIVERY_PROGRESS),
-      ).toBe('delivery progress');
+        await service.updateOrderStatus(orderId, OrderStatus.DELIVERY_PROGRESS),
+      ).toBe(true);
     });
     it('should be update order status and return "order confirmed"', async () => {
       expect(
-        service.updateOrderStatus(orderInfo, OrderStatus.ORDER_COMPLETED),
-      ).toBe('order completed');
+        await service.updateOrderStatus(orderId, OrderStatus.ORDER_COMPLETED),
+      ).toBe(true);
     });
   });
 
   describe('sendOrderAlarm', () => {
+    const orderId = 12345;
     it('should be return true', async () => {
-      expect(service.sendOrderAlarm(orderInfo)).toBe(true);
+      expect(service.sendOrderAlarm(orderId)).toBe(true);
     });
   });
 });
