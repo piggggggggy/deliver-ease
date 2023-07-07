@@ -4,6 +4,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 export class StoreService {
   private stores: any[] = [];
 
+  // main service function
   registerStore(storeData: any): boolean {
     const isValid = this.checkStoreInfoValidation(storeData);
     if (isValid) {
@@ -42,7 +43,40 @@ export class StoreService {
     throw new Error('Invalid store data');
   }
 
-  // unit function
+  // dish service function
+  registerStoreDish(storeId: string, dishData: any): boolean {
+    this.checkInvalidStoreId(storeId);
+    const isValid = this.checkStoreDishValidation(dishData);
+    if (isValid) {
+      const store = this.getOneStore(storeId);
+      store.dishes.push({
+        id: store.dishes.length + 1, // temporary
+        ...dishData,
+      });
+      return true;
+    }
+    throw new Error('Invalid dish data');
+  }
+  deleteStoreDish(storeId: string, dishId: string) {
+    this.checkInvalidStoreId(storeId);
+    const store = this.getOneStore(storeId);
+    store.dishes.filter((dish) => dish.id !== parseInt(dishId));
+  }
+  updateStoreDish(storeId: string, dishId: string, dishData: any): boolean {
+    this.checkInvalidStoreId(storeId);
+    const isValid = this.checkStoreDishValidation(dishData);
+    if (isValid) {
+      const store = this.getOneStore(storeId);
+      store.dishes = store.dishes.map((dish) =>
+        dish.id === parseInt(dishId) ? { ...dish, ...dishData } : dish,
+      );
+      return true;
+    }
+    throw new Error('Invalid dish data');
+  }
+
+  /* unit function */
+  // main store unit function
   checkInvalidStoreId(id: string): boolean {
     try {
       this.getOneStore(id);
@@ -68,7 +102,21 @@ export class StoreService {
     );
   }
 
+  // dish unit function
+  checkStoreDishValidation(dishData: any): boolean {
+    const { dishName, dishImgUrl, price, stock, category, options } = dishData;
+    return (
+      this.checkStoreDishName(dishName) &&
+      this.checkStoreDishImgUrl(dishImgUrl) &&
+      this.checkStoreDishPrice(price) &&
+      this.checkStoreDishStock(stock) &&
+      this.checkStoreDishCategory(category) &&
+      this.checkStoreDishOptions(options)
+    );
+  }
+
   // sub unit function
+  // main
   checkStoreName(storeName: string): boolean {
     const maxLength = 16;
     return typeof storeName === 'string' && storeName.length <= maxLength;
@@ -92,5 +140,38 @@ export class StoreService {
 
   checkStoreMiniumPriceForDelivering(at_least_order_price: number): boolean {
     return typeof at_least_order_price === 'number' && at_least_order_price > 0;
+  }
+
+  // dish
+  checkStoreDishName(dishName: string): boolean {
+    const maxLength = 16;
+    return typeof dishName === 'string' && dishName.length <= maxLength;
+  }
+  checkStoreDishImgUrl(dishImgUrl: string): boolean {
+    const urlPattern =
+      /^(http(s)?:\/\/)(www\.)?([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?$/;
+    return typeof dishImgUrl === 'string' && urlPattern.test(dishImgUrl);
+  }
+  checkStoreDishPrice(dishPrice: number): boolean {
+    return typeof dishPrice === 'number' && dishPrice > 0;
+  }
+  checkStoreDishStock(dishStock: number): boolean {
+    return typeof dishStock === 'number' && dishStock > 0;
+  }
+  checkStoreDishCategory(dishCategory: string): boolean {
+    return typeof dishCategory === 'string' && dishCategory !== '';
+  }
+  checkStoreDishOptions(
+    dishOptions: { name: string; price: number }[],
+  ): boolean {
+    dishOptions.forEach((option) => {
+      if (!this.checkStoreDishName(option.name)) {
+        return false;
+      }
+      if (!this.checkStoreDishPrice(option.price)) {
+        return false;
+      }
+    });
+    return true;
   }
 }
