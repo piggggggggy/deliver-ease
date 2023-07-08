@@ -12,7 +12,21 @@ describe('PaymentService', () => {
     service = module.get<PaymentService>(PaymentService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('validatePaymentType', () => {
+    it('should be check payment type and return true', () => {
+      expect(service.validatePaymentType('credit card')).toBe(true);
+    });
+    it('should be check payment type and return false', () => {
+      expect(service.validatePaymentType('kakao pay')).toBe(false);
+    });
+  });
+
+  describe('updatePaymentStatus', () => {
+    it("should be update payment status to 'completed'", () => {
+      expect(service.updatePaymentStatus(1, 'completed')).toEqual({
+        id: 1,
+        paymentStatus: 'completed',
+      });
+    });
   });
 });
