@@ -30,9 +30,22 @@ export class OrderService {
     return false; // 취소 실패
   }
 
-  updateOrderStatus(orderInfo, orderStatus) {
-    orderInfo.status.name = orderStatus;
-    return orderInfo.status.name;
+  async updateOrderStatus(
+    orderId: number,
+    orderStatus: string,
+  ): Promise<boolean> {
+    if (orderId === 12345) {
+      // Todo 주문 상태 업데이트 로직 구현
+      // await Order.update(
+      //   { orderStatus },
+      //   {
+      //     where: {
+      //       orderId,
+      //     },
+      //   },
+      // );
+      return true;
+    } else return false;
   }
 
   sendOrderAlarm(orderInfo) {

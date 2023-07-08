@@ -59,4 +59,19 @@ describe('OrderController', () => {
       expect(result).toEqual(orderHistory);
     });
   });
+
+  describe('updateOrderStatus', () => {
+    const orderStatus = 'completed';
+    it('should update order status and return true', async () => {
+      const orderId = 12345;
+      const result = await controller.updateOrderStatus(orderId, orderStatus);
+      expect(result).toBe(true);
+    });
+
+    it('should update order status and return false', async () => {
+      const orderId = 123;
+      const result = await controller.updateOrderStatus(orderId, orderStatus);
+      expect(result).toBe(false);
+    });
+  });
 });
