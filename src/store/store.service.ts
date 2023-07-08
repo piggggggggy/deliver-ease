@@ -27,6 +27,24 @@ export class StoreService {
   }
 
   deleteStore(id: string): boolean {
+    this.checkInvalidStoreId(id);
+    this.stores.filter((store) => store.id !== parseInt(id));
+    return true;
+  }
+
+  editStore(id: string, storeData: any): boolean {
+    this.checkInvalidStoreId(id);
+    const isValid = this.checkStoreInfoValidation(storeData);
+    if (isValid) {
+      this.stores = this.stores.map((store) =>
+        store.id === parseInt(id) ? { ...store, ...storeData } : store,
+      );
+      return true;
+    }
+    throw new Error('Invalid store data');
+  }
+
+  // unit function
     try {
       this.checkInvalidStoreId(id);
       this.stores.filter((store) => store.id !== parseInt(id));
@@ -120,6 +138,16 @@ export class StoreService {
     );
   }
 
+  checkInvalidStoreId(id: string): boolean {
+    try {
+      this.getOneStore(id);
+    } catch (error) {
+      throw new Error('Invalid store id');
+    }
+    return true;
+  }
+
+  // sub unit function
   // dish unit function
   checkStoreDishValidation(dishData: any): boolean {
     const { name, imgUrl, price, stock, category, options } = dishData;
@@ -141,12 +169,14 @@ export class StoreService {
   }
 
   checkStoreImgUrl(storeImgUrl: string): boolean {
+    // 정규 표현식을 사용하여 URL 패턴을 확인
     const urlPattern =
       /^(http(s)?:\/\/)(www\.)?([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?$/;
     return typeof storeImgUrl === 'string' && urlPattern.test(storeImgUrl);
   }
 
   checkStoreBusinessHours(open_time: string, close_time: string): boolean {
+    // 정규 표현식을 사용하여 시간 패턴을 확인
     const timePattern = /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)$/;
     return (
       typeof open_time === 'string' &&

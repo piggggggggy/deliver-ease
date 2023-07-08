@@ -14,6 +14,12 @@ describe('StoreService', () => {
 
   const argsToBeExpectedInvalid = {
     storeName: 'long long long long and invalid store name',
+    storeImgUrl: 1234,
+    open_time: undefined,
+    close_time: undefined,
+    at_least_order_price: 'invalid price',
+  };
+  const argsToBeExpectedToReturnTrue = {
     storeImgUrl: 'invalid url',
     open_time: 'invalid time',
     close_time: 'invalid time',
@@ -27,6 +33,9 @@ describe('StoreService', () => {
     at_least_order_price: 10000,
   };
 
+  // Helper unit test
+  describe('Helper unit test function', () => {
+    describe('checkStoreInfoValidation', () => {
   const argsToBeExpectedInvalidDish = {
     name: 'long long long long and invalid dish name',
     imgUrl: 'invalid url',
@@ -62,11 +71,21 @@ describe('StoreService', () => {
         expect(result).toBe(false);
       });
 
+      it('should return true', () => {
+        const result = service.checkStoreInfoValidation(
+          argsToBeExpectedToReturnTrue,
+        );
+
       it('should return true with ', () => {
         const result = service.checkStoreInfoValidation(argsToBeExpectedValid);
+
         expect(result).toBe(true);
       });
     });
+
+
+    describe('checkStoreName', () => {
+      it('should return false', () => {
 
     describe('subUnit - checkStoreName', () => {
       it('should return false with invalid argument', () => {
@@ -81,6 +100,10 @@ describe('StoreService', () => {
       });
     });
 
+    describe('checkStoreImgUrl', () => {
+      it('should return false with Number argument', () => {
+        const result = service.checkStoreImgUrl(
+          argsToBeExpectedInvalid.storeImgUrl as string,
     describe('subUnit - checkStoreImgUrl', () => {
       it('should return false with invalid url', () => {
         const result = service.checkStoreImgUrl(
@@ -88,6 +111,13 @@ describe('StoreService', () => {
         );
         expect(result).toBe(false);
       });
+
+      it('should return false with invalid argument', () => {
+        const result = service.checkStoreImgUrl('invalid url');
+        expect(result).toBe(false);
+      });
+
+      it('should return true', () => {
 
       it('should return true with valid url', () => {
         const result = service.checkStoreImgUrl(
@@ -97,6 +127,12 @@ describe('StoreService', () => {
       });
     });
 
+    // TODO: need to be refactored
+    describe('checkStoreBusinessHours', () => {
+      it('should return false with invalid argument', () => {
+        const result = service.checkStoreBusinessHours(
+          argsToBeExpectedInvalid.open_time as string,
+          argsToBeExpectedInvalid.close_time as string,
     // TODO: need to be refactored with date policy
     describe('subUnit - checkStoreBusinessHours', () => {
       it('should return false with invalid argument', () => {
@@ -113,6 +149,10 @@ describe('StoreService', () => {
       });
     });
 
+    describe('checkStoreMiniumPriceForDelivering', () => {
+      it('should return false with string argument', () => {
+        const result = service.checkStoreMiniumPriceForDelivering(
+          argsToBeExpectedInvalid.at_least_order_price as number,
     describe('subUnit - checkStoreMiniumPriceForDelivering', () => {
       it('should return false with out-of-range price', () => {
         const result = service.checkStoreMiniumPriceForDelivering(-5);
@@ -135,6 +175,21 @@ describe('StoreService', () => {
         expect(result).toBe(false);
       });
 
+      it('should return false with invalid argument', () => {
+        const result = service.checkStoreMiniumPriceForDelivering(-5);
+        expect(result).toBe(false);
+      });
+
+      it('should return true', () => {
+        const result = service.checkStoreMiniumPriceForDelivering(10000);
+        expect(result).toBe(true);
+      });
+    });
+  });
+
+  /* Service unit test function */
+  // registerStore
+  describe('Register Store', () => {
       it('should return true with ', () => {
         const result = service.checkStoreDishValidation(
           argsToBeExpectedValidDish,
@@ -244,6 +299,7 @@ describe('StoreService', () => {
     });
 
     it('should return true', () => {
+      const result = service.registerStore(argsToBeExpectedToReturnTrue);
       const result = service.registerStore(argsToBeExpectedValid);
       expect(result).toBe(true);
       const store = service.getOneStore('1');
@@ -252,6 +308,11 @@ describe('StoreService', () => {
     });
   });
 
+  // deleteStore
+  // TODO: add auth check before delete api
+  describe('Delete Store', () => {
+    it('should return false with invalid argument', () => {
+      const result = service.deleteStore('invalidId');
   // TODO: add auth check before delete api
   describe('Delete Store - deleteStore', () => {
     it('should return false with nonexistent storeId', () => {
@@ -260,12 +321,26 @@ describe('StoreService', () => {
     });
 
     it('should return true', () => {
+      service.registerStore(argsToBeExpectedToReturnTrue);
+
       service.registerStore(argsToBeExpectedValid);
       const result = service.deleteStore('1');
       expect(result).toBe(true);
     });
   });
 
+  // editStore
+  // TODO: add auth check before delete api
+  describe('Edit Store', () => {
+    it('should return false with invalid argument', () => {
+      const result = service.editStore('invalidId', argsToBeExpectedInvalid);
+      expect(result).toBe(false);
+    });
+
+    it('should return true', () => {
+      service.registerStore(argsToBeExpectedToReturnTrue);
+      const result = service.editStore('1', argsToBeExpectedToReturnTrue);
+      expect(result).toBe(true);
   describe('Update Store - updateStore', () => {
     it('should return false with nonexistent storeId', () => {
       try {
