@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
-
   private userFavorites: Record<string, string[]> = {};
 
   addUserFavorite(userId: string, storeId: string): void {
@@ -23,7 +22,7 @@ export class UserService {
 
   getUserFavorites(userId: string): string[] {
     return this.userFavorites[userId] || [];
-
+  }
   private users = [
     {
       id: 1,

@@ -7,10 +7,16 @@ import { ReviewModule } from './review/review.module';
 import { PaymentModule } from './payment/payment.module';
 import { StoreModule } from './store/store.module';
 import { CartModule } from './cart/cart.module';
-import { DishModule } from './dish/dish.module';
 
 @Module({
-  imports: [UserModule, OrderModule, ReviewModule, PaymentModule, StoreModule, CartModule, DishModule],
+  imports: [
+    UserModule,
+    OrderModule,
+    ReviewModule,
+    PaymentModule,
+    StoreModule,
+    CartModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
